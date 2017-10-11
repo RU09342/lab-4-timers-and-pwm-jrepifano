@@ -1,17 +1,3 @@
-# Software Debouncing
-For this part of the lab I just built off of my button interrupt code. 
-I tested the button bouncing on the scope, the screenshots are in this folder.
-It only takes a couple microseconds for this button to settle.
-I used a continous interrupt which counts to 65000 with a clock frequency of 1MHz.
-This means the interrupt will go off every 65ms, which is plenty of time for the button to settle.
-When the button interrupt fire, it disables button interrupts.
-When the timer interrupt fires, it enables button interrupts.
-This will give a minimum 65ms delay in between each button press ensuring that the button settles.
-
-
-The code for the 2553 is included below:
-
-
 #include <msp430.h> 
 
 #define BUTTON BIT3

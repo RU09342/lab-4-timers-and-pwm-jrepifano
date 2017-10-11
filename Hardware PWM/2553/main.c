@@ -1,11 +1,3 @@
-# Hardware PWM
-This works the same way as software pwm except selecting TA0CCTL = OUTMOD_7, makes the selected pin (in this case the LED) set and reset on the interrupts.
-So in the initial case it will be on for 50% of the clock cycle.
-I change the duty cycle the same way I did with software pwm.
-It's a button interrupt with a switch statement that increments CCR1.
-
-Below is my code for the 2553:
-
 #include <msp430.h> 
 
 #include <msp430g2553.h>

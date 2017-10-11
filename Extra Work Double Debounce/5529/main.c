@@ -1,20 +1,8 @@
-# Software Debouncing
-For this part of the lab I just built off of my button interrupt code. 
-I tested the button bouncing on the scope, the screenshots are in this folder.
-It only takes a couple microseconds for this button to settle.
-I used a continous interrupt which counts to 65000 with a clock frequency of 1MHz.
-This means the interrupt will go off every 65ms, which is plenty of time for the button to settle.
-When the button interrupt fire, it disables button interrupts.
-When the timer interrupt fires, it enables button interrupts.
-This will give a minimum 65ms delay in between each button press ensuring that the button settles.
-
-
-The code for the 2553 is included below:
-
-
 #include <msp430.h> 
+#include <msp430f5529.h>
 
-#define BUTTON BIT3
+#define BUTTON BIT1
+#define BUTTON2 BIT1
 #define LED BIT0
 
 
@@ -27,14 +15,18 @@ WDTCTL = WDTPW + WDTHOLD; // Stop watchdog timer
 
 P1DIR |= LED; // Set LEDS as outputs
 P1OUT &= ~LED; // Initialize the LEDs off
+P2REN |= BUTTON2;
 P1REN |= BUTTON; //Enables a resistor for the button.
+P2OUT |= BUTTON2;
 P1OUT |= BUTTON; //Setting the resistor as a pull-up.
+P2IES |= BUTTON2;
 P1IES |= BUTTON; //Sets Edge so that the button is activated when pressed down.
 
 P1IE |= BUTTON; //Sets mask so that interrupt can't be ignored
+P2IE |= BUTTON2;
 
-CCTL0 = CCIE;                            // CCR0 interrupt enabled
-TACTL = TASSEL_2 + MC_2;                 // SMCLK set to continuous mode
+TB0CCTL0 = CCIE;                           // CCR0 interrupt enabled
+TBCTL = TBSSEL_2 + MC_2;                 // SMCLK set to continuous mode
 
 __enable_interrupt(); // enables interrupt for board
 
@@ -62,12 +54,25 @@ P1OUT &= ~LED; // Turn's LEDs off after flag is cleared.
 
 }
 
-#pragma vector=TIMER0_A0_VECTOR               //Interrupt routine
+// Interrupt routine for port 1
+#pragma vector=PORT2_VECTOR
+__interrupt void Port_2(void)
+{
+blahh ^= 0x01;  // flips LED so that the if statement to blink the LED is activated.
+P2IE &= ~BUTTON2; //disable button interrupts
+P2IFG &= ~BUTTON2; // Clear flag when done
+P2OUT &= ~LED; // Turn's LEDs off after flag is cleared.
 
-__interrupt void Timer_A (void)
+}
+
+
+#pragma vector=TIMER0_B0_VECTOR               //Interrupt routine
+
+__interrupt void Timer_B (void)
 {
 
   P1IE |= BUTTON;                       //enable button interrupts
+  P2IE |= BUTTON2;                       //enable button interrupts
 
 }
 

@@ -1,17 +1,3 @@
-# Software PWM
-CCR0 is set to count up to 100 and back down to 0.
-CCR1 is set to capture at 500 and fire an interrupt.
-In this interrupt I toggle the LED.
-In this case the duty cycle is 50%
-I also have a button interrupt set up with a switch statement that counts how many times the button has been pressed.
-Each switch statement changes CCR1, which changes the duty cycle.
-
-I collaborated with Lonnie on software PWM
-
-Scope screenshot 1 and 2 are from Lonnie's PWM which works the same way. The first one had a 10% duty cycle and scope 2 had 90 % duty cycle.
-
-Below is my code for 2553:
-
 #include <msp430g2553.h>
 
 #define LED     BIT0
